@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DocReRank:Single-Page Hard Negative Query Generation for Training Multi-Modal RAG Rerankers.">
+  <meta name="keywords" content="DocReRank, Reranking, Retrieval-Augmented Generation, Hard Negative Mining, Multi-Modal Retrieval, Query Generation, Negative Generation, Document Retrieval">
+  <meta name="robots" content="index, follow">
+  <title>REAL-MM-RAG: A Real-World Multi-Modal Retrieval Benchmark</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro&display=swap">
+  <link rel="icon" href="buttons/web_logo3.png">
+  
+  <style>
+    body {
+      background-color: rgb(245, 245, 245);
+      color: rgb(49, 48, 48);
+      font-family: 'Google Sans', sans-serif;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 50px 0;
+      box-sizing: border-box;
+    }
+    .transparent-bg {
+        background: transparent !important; /* Forces transparency */
+        max-width: 70%;
+        height: auto;
+        display: block;
+        margin: auto;
+    }
+    .main-container {
+      padding: 15px;
+      background-color: rgb(245, 245, 245);
+      max-width: 84%;
+      box-sizing: border-box;
+      margin-top: 50px;
+      align-items: center;
+    }
+    .section-title {
+        font-family: 'Google Sans', sans-serif;
+        font-size: 30px; /* Slightly smaller than h2 */
+        font-weight: bold;
+        line-height: 1.2;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    h1 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 56px;
+      line-height: 1.2;
+      margin-bottom: -18px;
+      margin-top: 0;
+    }
+    .custom-table {
+        width: 70%; /* Matches image and text width */
+        margin: auto; /* Centers the table */
+        border-collapse: collapse;
+        font-size: 18px;
+    }
+
+        .custom-table th, .custom-table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+        .custom-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .bibtex-container {
+        max-width: 70%; /* Matches images and text width */
+        margin: auto; /* Centers the section */
+        text-align: left; /* Ensures text is aligned properly */
+    }
+
+    .bibtex-code {
+        background-color: #f4f4f4;
+        padding: 15px;
+        font-family: monospace;
+        font-size: 14px;
+        border-radius: 5px;
+        overflow-x: auto;
+        white-space: pre-wrap; /* Ensures it wraps properly */
+        word-wrap: break-word;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+
+    h2 {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 30px;
+      line-height: 1.2;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .author-links a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .institute {
+      margin-top: 0;
+      margin-bottom: -16px;
+    }
+
+    /* Buttons Section */
+    .image-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px; /* Space between buttons */
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .image-item {
+      text-align: center;
+      opacity: 0.7;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .image-item img {
+      max-width: 40px; /* Match reference size */
+      height: auto;
+    }
+
+    .image-title {
+      font-size: 16px;
+      color: black;
+      margin-top: 5px;
+    }
+
+    .image-item:hover {
+      opacity: 1; /* Full visibility on hover */
+    }
+
+    /* Resized Images */
+    /* Ensures images are properly sized and background blends */
+    .resized-image {
+    max-width: 90%;  /* Ensures images do not stretch too much */
+    height: auto;
+    display: block;
+    margin: auto;
+    background: transparent; /* Removes white background effect */
+    }
+    .resized-image_2 {
+    max-width: 70%;  /* Ensures images do not stretch too much */
+    height: auto;
+    display: block;
+    margin: auto;
+    background: transparent; /* Removes white background effect */
+    }
+    /* Ensures text width matches image width */
+    .limited-width {
+    max-width: 90%;  /* Same as images */
+    margin: auto;
+    text-align: justify;
+    margin: 10px auto 0 auto; /* top margin only */
+
+    }
+    @media (max-width: 768px) {
+      .limited-width {
+          max-width: 100%;  /* Same as images */
+          font-size: 0.55rem; /* Slightly larger text for better readability */
+          line-height: 1.2;
+          margin: 10px auto 0 auto; /* top margin only */
+      }
+      .section-title {
+          font-size: 14px; /* Much smaller section titles on mobile */
+          margin-bottom: 10px;
+      }
+      .resized-image, .resized-image_2 {
+          max-width: 100%; /* Allow images to take full width on small screens */
+          height: auto; /* Maintain aspect ratio */
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <h1>DocReRank</h1>
+    <br>
+    <h2>Single-Page Hard Negative Query Generation for Training Multi-Modal RAG Rerankers</h2>
+    <p class="author-links">
+      <a href="mailto:navve.wasserman@weizmann.ac.il">Navve Wasserman<sup>1</sup></a> &nbsp;&nbsp; 
+      <a href="mailto:oliver.heinimann@weizmann.ac.il">Oliver Heinimann<sup>1</sup></a> &nbsp;&nbsp; 
+      <a href="mailto:yuval.golbari@weizmann.ac.il">Yuval Golbari<sup>1</sup></a> &nbsp;&nbsp; 
+      <a href="mailto:tal.zimbalist@weizmann.ac.il">Tal Zimbalist<sup>1</sup></a> &nbsp;&nbsp; 
+      <a href="mailto:eli.schwartz@ibm.com">Eli Schwartz<sup>2</sup></a> &nbsp;&nbsp; 
+      <a href="mailto:michal.irani@weizmann.ac.il ">Michal Irani<sup>1</sup></a>
+    </p>
+    <p class="institute"><sup>1</sup>Weizmann Institute of Science &nbsp;&nbsp; <sup>2</sup> IBM Research Israel</p>
+    <br>
+
+    <!-- Buttons Section -->
+    <div class="image-container">
+      <a href="https://arxiv.org/abs/2505.22584">
+        <div class="image-item">
+          <img src="buttons/paper.jpg" alt="Paper">
+          <p class="image-title">Paper</p>
+        </div>
+      </a>
+      <a href="https://huggingface.co/DocReRank">
+        <div class="image-item">
+          <img src="buttons/dataset.png" alt="Datasets and Models">
+          <p class="image-title">Benchmark</p>
+        </div>
+      </a>
+    </div>
+
+    <br>
+
+    <!-- First Figure: Proposed Benchmark -->
+    <h3 class="section-title">Proposed Single-Page Hard Negative Query Generation Approach</h3>
+    <img class="resized-image" src="figures/teaser.png" alt="Approach">
+
+    <br>
+
+    <!-- Abstract Section -->
+    <h3 class="section-title">Abstract</h3>
+    <p class="limited-width">
+      Rerankers play a critical role in multimodal Retrieval-Augmented Generation (RAG) by refining ranking of an initial set of retrieved documents. Rerankers are typically trained using hard negative mining, whose goal is to select pages for each query which rank high, but are actually irrelevant. However, this selection process is typically passive and restricted to what the retriever can find in the available corpus, leading to several inherent limitations. These include: limited diversity, negative examples which are often not hard enough, low controllability, and frequent false negatives which harm training. Our paper proposes an alternative approach: Single-Page Hard Negative Query Generation, which goes the other way around. Instead of retrieving negative pages per query, we generate hard negative queries per page. Using an automated LLM-VLM pipeline, and given a page and its positive query, we create hard negatives by rephrasing the query to be as similar as possible in form and context, yet not answerable from the page. This paradigm enables fine-grained control over the generated queries, resulting in diverse, hard, and targeted negatives. It also supports efficient false negative verification. Our experiments show that rerankers trained with data generated using our approach outperform existing models and significantly improve retrieval performance.
+    </p>
+
+    <br>
+
+    <!-- Second Figure: Benchmark Construction Pipeline -->
+    <h3 class="section-title">Re-ranking Framework</h3>
+    <img class="resized-image" src="figures/reranking_framework.png" alt="Re-ranking Framework">
+    <p class="limited-width">
+      Given a query and a document corpus, a retrieval model first retrieves the
+      top-K relevant pages. A reranker then reorders these K pages based on the query to improve retrieval quality.
+    </p>
+    
+
+
+
+    
+    <h3 class="section-title">Dataset Construction Pipeline.</h3>
+    <div class="image-container">
+      <img class="resized-image transparent-bg" src="figures/Dataset_Construction.png" alt="Construction">
+    </div>
+    <p class="limited-width">
+      Our data construction pipeline implements Single-Page Hard Negative Query Generation, a novel approach that reverses traditional hard negative mining. Instead of retrieving negative pages for each query, we generate multiple hard negative queries for each document page. The process starts by creating positive queries with a Vision-Language Model and verifying their answerability, followed by generating challenging negative queries through an LLM and validating them with a VLM to ensure they are unanswerable yet semantically close to the original. This design enables greater diversity, precise control over difficulty, and efficient verification, resulting in high-quality triplets (page, positive query, hard negatives) that significantly improve reranker performance. Our method also supports domain-specific adaptation—such as finance-focused negatives that alter fine-grained attributes (e.g., years, numbers, entities)—to target real-world challenges.
+    </p>
+    <br>
+
+
+    <h3 class="section-title"> Examples of Our Generated Negative Queries</h3>
+    <div class="image-container">
+      <img class="resized-image_2 transparent-bg" src="figures/data_examples_v5.jpg" alt="Examples">
+    </div>
+    <p class="limited-width">
+      We show examples of a cropped page and its positive
+      query, along with the generated negative queries. Top: hard negatives generated using the general pipeline. Bottom:
+      negatives generated using finance fine-detail prompts, which modify specific properties in the query.
+    </p>
+    <br>
+
+    <h3 class="section-title"> Table-Focused Training Improves Financial Benchmarks</h3>
+    <img class="resized-image_2" src="figures/RobTab.png" alt="Benchmark Table">
+    <p class="limited-width">
+        Fine-tuning with our proposed table-heavy training set, combined with the ColPali training set (both in their original and rephrased versions) significantly enhances performance on financial benchmarks (results shown for rephrasing level 3).    </p>
+    <br>
+
+    <h3 class="section-title"> Fine-Tuning on Rephrased Training Set </h3>
+    <img class="resized-image_2" src="figures/Rob.png" alt="Benchmark Table">
+    <p class="limited-width">
+        We compare the NDCG@5 scores across rephrasing levels for baseline models (ColPali and ColQwen) against our fine-tuned models (RobCol). The results demonstrate that fine-tuning with our rephrased training data significantly enhances rephrasing robustness for both ColPali and ColQwen.   </p>
+    <br>
+
+
+
+    <div class="bibtex-container">
+    <h3 class="section-title">BibTeX</h3>
+    <pre class="bibtex-code">
+    @misc{wasserman2025realmmragrealworldmultimodalretrieval,
+        title={REAL-MM-RAG: A Real-World Multi-Modal Retrieval Benchmark}, 
+        author={Navve Wasserman and Roi Pony and Oshri Naparstek and Adi Raz Goldfarb and Eli Schwartz and Udi Barzelay and Leonid Karlinsky},
+        year={2025},
+        eprint={2502.12342},
+        archivePrefix={arXiv},
+        primaryClass={cs.IR},
+        url={https://arxiv.org/abs/2502.12342}, 
+    }
+    </pre>
+    </div>
+
+
+  </div>
+
+
+</body>
+</html>
