@@ -1,1 +1,1 @@
-🔗 Project Page: https://navvewas.github.io/DocRerank/
+🔗 Project Page: https://navvewas.github.io/DocReRank/ 
