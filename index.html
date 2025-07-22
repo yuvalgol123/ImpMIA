@@ -231,7 +231,7 @@
 
     <!-- Second Figure: Benchmark Construction Pipeline -->
     <h3 class="section-title">Re-ranking Framework</h3>
-    <img class="resized-image" src="figures/reranking_framework.png" alt="Re-ranking Framework">
+    <img class="resized-image_2" src="figures/reranking_framework.png" alt="Re-ranking Framework">
     <p class="limited-width">
       Given a query and a document corpus, a retrieval model first retrieves the
       top-K relevant pages. A reranker then reorders these K pages based on the query to improve retrieval quality.
@@ -243,7 +243,7 @@
     
     <h3 class="section-title">Dataset Construction Pipeline.</h3>
     <div class="image-container">
-      <img class="resized-image transparent-bg" src="figures/Dataset_Construction.png" alt="Construction">
+      <img class="resized-image_2 transparent-bg" src="figures/Dataset_Construction.png" alt="Construction">
     </div>
     <p class="limited-width">
       Our data construction pipeline implements Single-Page Hard Negative Query Generation, a novel approach that reverses traditional hard negative mining. Instead of retrieving negative pages for each query, we generate multiple hard negative queries for each document page. The process starts by creating positive queries with a Vision-Language Model and verifying their answerability, followed by generating challenging negative queries through an LLM and validating them with a VLM to ensure they are unanswerable yet semantically close to the original. This design enables greater diversity, precise control over difficulty, and efficient verification, resulting in high-quality triplets (page, positive query, hard negatives) that significantly improve reranker performance. Our method also supports domain-specific adaptation—such as finance-focused negatives that alter fine-grained attributes (e.g., years, numbers, entities)—to target real-world challenges.
@@ -271,11 +271,16 @@
         </p>
     <br>
 
-    <!-- <h3 class="section-title"> Fine-Tuning on Rephrased Training Set </h3>
-    <img class="resized-image_2" src="figures/Rob.png" alt="Benchmark Table">
+
+    <h3 class="section-title"> Model Performance on the Real-MM-RAG Benchmark</h3>
+    <img class="resized-image_2" src="figures/Tab_real-modified.png" alt="Tab_Real">
     <p class="limited-width">
-        We compare the NDCG@5 scores across rephrasing levels for baseline models (ColPali and ColQwen) against our fine-tuned models (RobCol). The results demonstrate that fine-tuning with our rephrased training data significantly enhances rephrasing robustness for both ColPali and ColQwen.   </p>
-    <br> -->
+      Retrieval NDCG@5 results of rerankers after the first-step retrieval using ColPali and ColQwen. The left table shows performance on the original benchmark,
+      while the right table shows performance on the rephrased version, where queries were reworded to preserve meaning but use different phrasing.        </p>
+    <br>
+
+
+
 
 
 
