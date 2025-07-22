@@ -262,13 +262,16 @@
     </p>
     <br>
 
-    <!-- <h3 class="section-title"> Table-Focused Training Improves Financial Benchmarks</h3>
-    <img class="resized-image_2" src="figures/RobTab.png" alt="Benchmark Table">
+    <h3 class="section-title"> Model Performance on the ViDoReV2 Benchmark</h3>
+    <img class="resized-image_2" src="figures/Tab_Vidore2.png" alt="Tab_Vidore2">
     <p class="limited-width">
-        Fine-tuning with our proposed table-heavy training set, combined with the ColPali training set (both in their original and rephrased versions) significantly enhances performance on financial benchmarks (results shown for rephrasing level 3).    </p>
+      Retrieval NDCG@5 Results. The first row in each block shows first-step retrieval results using ColPali or ColQwen. The remaining rows correspond to second-step
+      reranking results. Our model DocReRank-Base is trained with a similar configuration to MonoQwen but includes
+      our generated data. DocReRank-Full is trained with generated fine-grained details and rephrased negative queries.    
+        </p>
     <br>
 
-    <h3 class="section-title"> Fine-Tuning on Rephrased Training Set </h3>
+    <!-- <h3 class="section-title"> Fine-Tuning on Rephrased Training Set </h3>
     <img class="resized-image_2" src="figures/Rob.png" alt="Benchmark Table">
     <p class="limited-width">
         We compare the NDCG@5 scores across rephrasing levels for baseline models (ColPali and ColQwen) against our fine-tuned models (RobCol). The results demonstrate that fine-tuning with our rephrased training data significantly enhances rephrasing robustness for both ColPali and ColQwen.   </p>
