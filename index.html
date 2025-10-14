@@ -1,313 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DocReRank:Single-Page Hard Negative Query Generation for Training Multi-Modal RAG Rerankers.">
-  <meta name="keywords" content="DocReRank, Reranking, Retrieval-Augmented Generation, Hard Negative Mining, Multi-Modal Retrieval, Query Generation, Negative Generation, Document Retrieval">
-  <meta name="robots" content="index, follow">
-  <meta name="google-site-verification" content="3pKg8Gm5D5IaVeyPwckyPj9I7bYh8Vztx9CvmgeLNak" />
-  <title>DocReRank:Single-Page Hard Negative Query Generation for Training Multi-Modal RAG Rerankers.</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro&display=swap">
-  <link rel="icon" href="buttons/web_logo3.png">
-  
-  <style>
-    body {
-      background-color: rgb(245, 245, 245);
-      color: rgb(49, 48, 48);
-      font-family: 'Google Sans', sans-serif;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      padding: 50px 0;
-      box-sizing: border-box;
-    }
-    .transparent-bg {
-        background: transparent !important; /* Forces transparency */
-        max-width: 70%;
-        height: auto;
-        display: block;
-        margin: auto;
-    }
-    .main-container {
-      padding: 15px;
-      background-color: rgb(245, 245, 245);
-      max-width: 84%;
-      box-sizing: border-box;
-      margin-top: 50px;
-      align-items: center;
-    }
-    .section-title {
-        font-family: 'Google Sans', sans-serif;
-        font-size: 30px; /* Slightly smaller than h2 */
-        font-weight: bold;
-        line-height: 1.2;
-        margin-top: 30px;
-        margin-bottom: 15px;
-    }
-    h1 {
-      font-family: 'Google Sans', sans-serif;
-      font-size: 56px;
-      line-height: 1.2;
-      margin-bottom: -18px;
-      margin-top: 0;
-    }
-    .custom-table {
-        width: 70%; /* Matches image and text width */
-        margin: auto; /* Centers the table */
-        border-collapse: collapse;
-        font-size: 18px;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>ImpMIA · Membership Inference via Implicit Bias & KKT</title>
 
-        .custom-table th, .custom-table td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: center;
-    }
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="icon" href="buttons/web_logo3.png" />
 
-        .custom-table th {
-        background-color: #f2f2f2;
-        font-weight: bold;
+<style>
+    html { font-size: 112%; }
+    @media (max-width: 768px){
+      html { font-size: 102%; } 
     }
-    .bibtex-container {
-        max-width: 70%; /* Matches images and text width */
-        margin: auto; /* Centers the section */
-        text-align: left; /* Ensures text is aligned properly */
+  :root{
+    --bg:#0b0c10; --surface:#111318; --text:#e8eaed; --muted:#aab2bf;
+    --brand:#5dd3ff; --brand2:#7ef7d6; --ring:rgba(125,211,252,.45);
+    --max: 1100px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f7f7f8; --surface:#ffffff; --text:#1a1c1f; --muted:#525b65;
+      --brand:#0077ff; --brand2:#00c9a7; --ring:rgba(0,119,255,.22);
     }
+  }
 
-    .bibtex-code {
-        background-color: #f4f4f4;
-        padding: 15px;
-        font-family: monospace;
-        font-size: 14px;
-        border-radius: 5px;
-        overflow-x: auto;
-        white-space: pre-wrap; /* Ensures it wraps properly */
-        word-wrap: break-word;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    }
+  *{ box-sizing:border-box }
+  html,body{ height:100% }
+  body{
+    margin:0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+    color:var(--text); background:var(--bg); line-height:1.65;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
 
-    h6 {
-      font-family: 'Google Sans', sans-serif; /* Specific font for headers */
-      font-size: 18px;
-      line-height: 0;
-      margin-top: 20px;
-      color: darkblue;
-    }
-    h2 {
-      font-family: 'Google Sans', sans-serif;
-      font-size: 30px;
-      line-height: 1.2;
-      margin-top: 0;
-      margin-bottom: 20px;
-    }
+  .hero{
+    max-width:var(--max); margin:32px auto 0; padding:0 16px; text-align:center;
+  }
+  .title{
+    font-size: clamp(26px, 4.6vw, 44px); line-height:1.08; margin:6px 0 8px; font-weight:800;
+    background:linear-gradient(90deg, var(--text), color-mix(in oklab, var(--text) 70%, var(--brand)));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .authors{ margin:8px 0 4px; font-weight:600 }
+  .authors a{ color:inherit; text-decoration:none }
+  .authors a:hover{ text-decoration:underline }
+  .affil{ color:var(--muted); margin:0 }
+  .cta{ display:flex; gap:10px; justify-content:center; margin:14px 0 6px; flex-wrap:wrap }
+  .btn{
+    text-decoration:none; font-weight:700; color:#061016; padding:10px 14px; border-radius:10px;
+    background:linear-gradient(90deg, var(--brand), var(--brand2)); box-shadow:0 8px 24px -10px var(--ring);
+  }
+  .btn.secondary{ background:transparent; color:var(--text); border:1px solid color-mix(in oklab, var(--text) 18%, transparent) }
 
-    .author-links a {
-      text-decoration: none;
-      color: black;
-    }
+  section{
+    max-width:var(--max); margin:22px auto; padding:0 16px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid color-mix(in oklab, var(--text) 10%, transparent);
+    border-radius:16px; padding:18px 16px; box-shadow:0 14px 30px -24px var(--ring);
+  }
+  h2.section-title{
+    font-size: clamp(20px, 3vw, 28px); margin:2px 0 12px; font-weight:800;
+  }
 
-    .institute {
-      margin-top: 0;
-      margin-bottom: -16px;
-    }
+  figure{ margin:0 }
+  .img{
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:12px;
+    border:1px solid color-mix(in oklab, var(--text) 10%, transparent);
+  }
+  @media (prefers-color-scheme: dark){
+    .img-well{ background:#ffffff; padding:8px; border-radius:14px; }
+    .img-well > img{ border-radius:8px; border:none }
+  }
+  @media (prefers-color-scheme: light){
+    .img-well{ padding:0; background:transparent }
+  }
 
-    /* Buttons Section */
-    .image-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px; /* Space between buttons */
-      width: 100%;
-      margin-top: 20px;
-    }
+  p, ul{ margin:14px 0 0 }
+  ul{ padding-left:20px }
+  .mono, code{ font-family:"Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace }
 
-    .image-item {
-      text-align: center;
-      opacity: 0.7;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .image-item img {
-      max-width: 40px; /* Match reference size */
-      height: auto;
-    }
-
-    .image-title {
-      font-size: 16px;
-      color: black;
-      margin-top: 5px;
-    }
-
-    .image-item:hover {
-      opacity: 1; /* Full visibility on hover */
-    }
-
-    /* Resized Images */
-    /* Ensures images are properly sized and background blends */
-    .resized-image {
-    max-width: 90%;  /* Ensures images do not stretch too much */
-    height: auto;
-    display: block;
-    margin: auto;
-    background: transparent; /* Removes white background effect */
-    }
-    .resized-image_2 {
-    max-width: 70%;  /* Ensures images do not stretch too much */
-    height: auto;
-    display: block;
-    margin: auto;
-    background: transparent; /* Removes white background effect */
-    }
-    /* Ensures text width matches image width */
-    .limited-width {
-    max-width: 90%;  /* Same as images */
-    margin: auto;
-    text-align: justify;
-    margin: 10px auto 0 auto; /* top margin only */
-
-    }
-    @media (max-width: 768px) {
-      .limited-width {
-          max-width: 100%;  /* Same as images */
-          font-size: 0.55rem; /* Slightly larger text for better readability */
-          line-height: 1.2;
-          margin: 10px auto 0 auto; /* top margin only */
-      }
-      .section-title {
-          font-size: 14px; /* Much smaller section titles on mobile */
-          margin-bottom: 10px;
-      }
-      .resized-image, .resized-image_2 {
-          max-width: 100%; /* Allow images to take full width on small screens */
-          height: auto; /* Maintain aspect ratio */
-      }
-    }
-
-  </style>
+  .bibtex{ white-space:pre; overflow-x:auto; background:#0e1116; color:#dfe5ee;
+    padding:12px; border-radius:12px; border:1px solid color-mix(in oklab, var(--text) 12%, transparent) }
+</style>
 </head>
+
 <body>
-  <div class="main-container">
-    <h1>DocReRank</h1>
-    <br>
-    <h2>Single-Page Hard Negative Query Generation for Training Multi-Modal RAG Rerankers</h2>
-    <p class="author-links">
-      <a href="mailto:navve.wasserman@weizmann.ac.il">Navve Wasserman<sup>1</sup></a> &nbsp;&nbsp; 
-      <a href="mailto:oliver.heinimann@weizmann.ac.il">Oliver Heinimann<sup>1</sup></a> &nbsp;&nbsp; 
-      <a href="mailto:yuval.golbari@weizmann.ac.il">Yuval Golbari<sup>1</sup></a> &nbsp;&nbsp; 
-      <a href="mailto:tal.zimbalist@weizmann.ac.il">Tal Zimbalist<sup>1</sup></a> &nbsp;&nbsp; 
-      <a href="mailto:eli.schwartz@ibm.com">Eli Schwartz<sup>2</sup></a> &nbsp;&nbsp; 
-      <a href="mailto:michal.irani@weizmann.ac.il ">Michal Irani<sup>1</sup></a>
-    </p>
-    <p class="institute"><sup>1</sup>Weizmann Institute of Science &nbsp;&nbsp; <sup>2</sup> IBM Research Israel</p>
-    <br>
 
-    <!-- Buttons Section -->
-    <div class="image-container">
-      <a href="https://arxiv.org/abs/2505.22584">
-        <div class="image-item">
-          <img src="buttons/paper.jpg" alt="Paper">
-          <p class="image-title">Paper</p>
-        </div>
-      </a>
-      <a href="https://huggingface.co/DocReRank">
-        <div class="image-item">
-          <img src="buttons/dataset.png" alt="Datasets and Models">
-          <p class="image-title">Datasets and Models</p>
-        </div>
-      </a>
+<header class="hero">
+  <h1 class="title">ImpMIA: Leveraging Implicit Bias for Membership Inference under Realistic Scenarios</h1>
+
+  <p class="authors">
+    <a href="mailto:yuval.golbari@weizmann.ac.il">Yuval Golbari</a><sup>*</sup> ·
+    <a href="mailto:navve.wasserman@weizmann.ac.il">Navve Wasserman</a><sup>*</sup> ·
+    <a href="mailto:gal.vardi@weizmann.ac.il">Gal Vardi</a> ·
+    <a href="mailto:michal.irani@weizmann.ac.il">Michal Irani</a>
+  </p>
+  <p class="auth-note">* Equal contribution</p>
+
+  <p class="affil">Weizmann Institute of Science</p>
+  <div class="cta">
+    <a class="btn" href="https://arxiv.org/abs/2510.10625" target="_blank" rel="noopener">Read on arXiv</a>
+    <a class="btn secondary" href="#" aria-disabled="true" role="button"> Code &amp; Datasets <span class="badge">coming soon</span>
+</a>  </div>
+</header>
+
+
+  <section class="card" id="abstract">
+    <h2 class="section-title">Abstract</h2>
+    <figure class="img-well">
+    </figure>
+<p>
+  Determining which data samples were used to train a model&mdash;known as
+  <em>Membership Inference Attack (MIA)</em>&mdash;is a well-studied and important
+  problem with implications for data privacy. Black-box methods presume access only
+  to the model’s outputs and often rely on training auxiliary reference models.
+  While they show strong empirical performance, they depend on assumptions that
+  rarely hold in real-world settings: (i) the attacker knows the training
+  hyperparameters; (ii) all available non-training samples come from the same
+  distribution as the training data; and (iii) the fraction of training data in the
+  evaluation set is known. In this work, we demonstrate that removing these
+  assumptions leads to a significant drop in black-box performance. We introduce
+  <strong>ImpMIA</strong>, a membership inference attack that exploits the
+  <strong>implicit bias</strong> of neural networks, removing the need for any
+  reference models and their assumptions. <strong>ImpMIA is a white-box attack</strong>
+  &ndash; a setting that assumes access to model weights and is increasingly
+  realistic given many publicly available models (e.g., via Hugging Face). Building
+  on maximum-margin implicit-bias theory, ImpMIA uses the
+  <strong>Karush&ndash;Kuhn&ndash;Tucker (KKT)</strong> optimality conditions to
+  identify training samples by finding those whose gradients most strongly
+  reconstruct the trained model’s parameters. As a result, ImpMIA achieves
+  state-of-the-art performance compared to both black- and white-box attacks in
+  realistic settings where only the model weights and a superset of the training
+  data are available.
+</p>
+  </section>
+
+  <!-- KKT -->
+<section class="card" id="kkt">
+  <h2 class="section-title">Setting, Implicit Bias &amp; KKT</h2>
+  <figure class="img-well">
+    <img class="img" src="figures/teaser1.png" alt="Setting and KKT formulation">
+  </figure>
+  <p>
+    <strong>Setting.</strong> We assume <em>white-box</em> access to a trained model’s parameters
+    <span class="mono">θ</span> (and the ability to compute gradients w.r.t. <span class="mono">θ</span>), and an
+    <em>inference superset</em> <span class="mono">S</span> that contains the unknown training set
+    <span class="mono">T ⊆ S</span>. The objective is to determine, for each candidate
+    <span class="mono">x ∈ S</span>, whether it belongs to the original training set.
+  </p>
+  <p>
+    <strong>Implicit Bias → KKT.</strong> Gradient-based training is biased toward
+    <em>max-margin</em> solutions. At such stationary points, the Karush–Kuhn–Tucker (KKT) conditions imply that the
+    parameters align with a non-negative combination of per-sample margin gradients:
+    <span class="mono">θ ≈ Σᵢ λᵢ gᵢ(xᵢ; θ)</span> with <span class="mono">λᵢ ≥ 0</span>.
+    Here <span class="mono">gᵢ</span> denotes the gradient of a margin-based objective at sample
+    <span class="mono">xᵢ</span>. Only a small set of influential (“support”) samples receive non-zero multipliers,
+    typically those closest to the decision boundary (by complementary slackness).
+  </p>
+</section>
+<!-- ATTACK -->
+<section class="card" id="attack">
+  <h2 class="section-title">ImpMIA Attack (λ-Optimization)</h2>
+  <figure class="img-well">
+    <img class="img" src="figures/teaser2.png" alt="Lambda optimization overview">
+  </figure>
+<p>
+  We exploit the KKT link that the trained weights can be written as a non-negative mix of per-sample margin gradients:
+  <span class="mono">θ = Σ<sub>i∈X_train</sub> λᵢ gᵢ</span>, <span class="mono">λᵢ ≥ 0</span>. Given only a superset
+  <span class="mono">X<sub>sup</sub></span>, we compute multiclass margin gradients
+  <span class="mono">gᵢ = ∇<sub>θ</sub>[Φ<sub>yᵢ</sub>(θ;xᵢ) − max<sub>j≠yᵢ</sub> Φ<sub>j</sub>(θ;xᵢ)]</span>,
+  stack them as <span class="mono">A = [g₁|…|g_M] ∈ ℝ^{p×M}</span>, and solve
+  <span class="mono">Aλ = θ</span> (with <span class="mono">λ ≥ 0</span>) to obtain one coefficient per candidate.
+  Large <span class="mono">λᵢ</span> ⇒ higher membership likelihood (especially near-margin points); if
+  <span class="mono">|X<sub>sup</sub>| ≤ p</span> and columns of <span class="mono">A</span> are independent, the solution is unique.
+</p>
+<ul>
+  <li><strong>Filters & aug:</strong> drop misclassified samples; add a horizontal flip.</li>
+  <li><strong>Blockwise solve:</strong> split parameters into ~<span class="mono">1.5×10⁵</span>-dim blocks; solve per block to reduce memory/conditioning issues.</li>
+  <li><strong>Stabilization:</strong> center/normalize each block of <span class="mono">A</span> and the matching slice of <span class="mono">θ</span>.</li>
+  <li><strong>Aggregation:</strong> aggregate coefficients across blocks/augs to form the final score and suppress spurious non-member spikes.</li>
+</ul>
+</section>
+
+  <!-- EVIDENCE -->
+  <section class="card" id="evidence">
+    <h2 class="section-title">λ Score vs. Distance from Decision Boundary</h2>
+    <figure class="img-well">
+      <img class="img" src="figures/lambda_vs_distance.png" alt="Lambda score vs. decision-boundary distance">
+    </figure>
+    <p>
+      <strong>Results of ImpMIA.</strong> Members receive consistently higher λ scores—even at similar margin distances—while non-members concentrate near λ≈0. Scatter plot of superset samples: x-axis = distance from the decision boundary, y-axis = λ score; points are colored by membership (member vs. non-member). High λ strongly indicates membership.
+    </p>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="card" id="results">
+    <h2 class="section-title">Results: No Asummptions Setting</h2>
+    <figure class="img-well">
+      <img class="img" src="figures/table_main.png" alt="Membership inference results across datasets">
+    </figure>
+    <p>
+      <strong>Evaluation protocol (no-assumptions).</strong> We audit on CIFAR-10/100 and CINIC-10 with white-box access to the released weights (gradients computed on-the-fly). The primary metric is <strong>TPR at low FPR</strong>; AUC is reported for context. We remove the assumptions commonly used by reference-model MIAs:
+    </p>
+    <ul>
+      <li><strong>Unknown training configuration.</strong> The attacker does not know the target’s hyperparameters. For methods that require reference models, we train them under <em>mismatched</em> settings (optimizer schedule/scale, batch size, regularization, training length) instead of the target’s true config.</li>
+
+      <li><strong>Different data distribution.</strong> The candidate pool intentionally mixes in-distribution (ID) and out-of-distribution (OOD) samples (e.g., CINIC-10 / OpenImages variants), so non-members are not drawn from the same distribution as the target’s training data.</li>
+
+      <li><strong>Unknown fraction of members.</strong> The attacker does not know the member ratio in the candidate pool. Reference-based methods that assume a fixed ratio must calibrate on a mismatched mixture.</li>
+
+      <li><strong>Removing all assumptions.</strong> We combine the above: mixed ID/OOD pool, mismatched reference-model training, and hidden member ratio.</li>
+    </ul>
+    <p>
+      <strong>Outcome.</strong> Under these realistic settings, reference-model attacks degrade sharply, while <strong>ImpMIA</strong> maintains strong detection at tiny FPRs. See the table for per-dataset trends.
+    </p>
+
+
+  </section>
+
+  <!-- ASSUMPTIONS -->
+  <section class="card" id="assumptions">
+    <h2 class="section-title">Evaluation of Assumptions Influence</h2>
+    <figure class="img-well">
+      <img class="img" src="figures/table_assumptions.png" alt="Influence of assumptions on membership inference">
+    </figure>
+    <p>
+      Ablation on CINIC-10 removing: known training config, matched non-member distribution, and known member ratio. TPR (%) at FPR = 0.01% / 0.00%.
+      Black-box attacks collapse as assumptions are removed; <strong>ImpMIA</strong> remains strong and often improves.
+    </p>
+  </section>
+
+<!-- CURVE -->
+<section class="card" id="curve">
+  <style>
+    #curve .wrap{
+      display:grid; gap:18px; align-items:center;
+      grid-template-columns: 1.05fr .95fr;
+    }
+    #curve figure{ margin:0; }
+    #curve .plot{ justify-self:end; max-width:640px; width:100%; }
+    @media (max-width: 980px){
+      #curve .wrap{ grid-template-columns:1fr; }
+      #curve .plot{ justify-self:stretch; }
+    }
+  </style>
+
+  <div class="wrap">
+    <div class="text">
+      <h2 class="section-title">Effect of Assumption Removal</h2>
+    <p>
+      The curve shows the reliance of reference-model attacks on these assumptions: as each assumption is removed, their performance drops at a fixed zero-FPR operating point, while <strong>ImpMIA</strong> remains comparatively stable—highlighting its assumption-agnostic design.
+    </p>
     </div>
 
-    <br>
-
-    <h6>Accepted to <em>EMNLP 2025</em></h6>
-
-    <!-- First Figure: Proposed Benchmark -->
-    <h3 class="section-title">Proposed Single-Page Hard Negative Query Generation Approach</h3>
-    <img class="resized-image" src="figures/teaser.png" alt="Approach">
-
-    <br>
-
-    <!-- Abstract Section -->
-    <h3 class="section-title">Abstract</h3>
-    <p class="limited-width">
-      Rerankers play a critical role in multimodal Retrieval-Augmented Generation (RAG) by refining ranking of an initial set of retrieved documents. Rerankers are typically trained using hard negative mining, whose goal is to select pages for each query which rank high, but are actually irrelevant. However, this selection process is typically passive and restricted to what the retriever can find in the available corpus, leading to several inherent limitations. These include: limited diversity, negative examples which are often not hard enough, low controllability, and frequent false negatives which harm training. Our paper proposes an alternative approach: Single-Page Hard Negative Query Generation, which goes the other way around. Instead of retrieving negative pages per query, we generate hard negative queries per page. Using an automated LLM-VLM pipeline, and given a page and its positive query, we create hard negatives by rephrasing the query to be as similar as possible in form and context, yet not answerable from the page. This paradigm enables fine-grained control over the generated queries, resulting in diverse, hard, and targeted negatives. It also supports efficient false negative verification. Our experiments show that rerankers trained with data generated using our approach outperform existing models and significantly improve retrieval performance.
-    </p>
-
-    <br>
-
-    <!-- Second Figure: Benchmark Construction Pipeline -->
-    <h3 class="section-title">Re-ranking Framework</h3>
-    <img class="resized-image_2" src="figures/reranking_framework.png" alt="Re-ranking Framework">
-    <p class="limited-width">
-      Given a query and a document corpus, a retrieval model first retrieves the
-      top-K relevant pages. A reranker then reorders these K pages based on the query to improve retrieval quality.
-    </p>
-    
-
-
-
-    
-    <h3 class="section-title">Dataset Construction Pipeline.</h3>
-    <div class="image-container">
-      <img class="resized-image_2 transparent-bg" src="figures/Dataset_Construction.png" alt="Construction">
-    </div>
-    <p class="limited-width">
-      Our data construction pipeline implements Single-Page Hard Negative Query Generation, a novel approach that reverses traditional hard negative mining. Instead of retrieving negative pages for each query, we generate multiple hard negative queries for each document page. The process starts by creating positive queries with a Vision-Language Model and verifying their answerability, followed by generating challenging negative queries through an LLM and validating them with a VLM to ensure they are unanswerable yet semantically close to the original. This design enables greater diversity, precise control over difficulty, and efficient verification, resulting in high-quality triplets (page, positive query, hard negatives) that significantly improve reranker performance. Our method also supports domain-specific adaptation—such as finance-focused negatives that alter fine-grained attributes (e.g., years, numbers, entities)—to target real-world challenges.
-    </p>
-    <br>
-
-
-    <h3 class="section-title"> Examples of Our Generated Negative Queries</h3>
-    <div class="image-container">
-      <img class="resized-image_2 transparent-bg" src="figures/data_examples.png" alt="Examples">
-    </div>
-    <p class="limited-width">
-      We show examples of a cropped page and its positive
-      query, along with the generated negative queries. Top: hard negatives generated using the general pipeline. Bottom:
-      negatives generated using finance fine-detail prompts, which modify specific properties in the query.
-    </p>
-    <br>
-
-    <h3 class="section-title"> Model Performance on the ViDoReV2 Benchmark</h3>
-    <img class="resized-image_2" src="figures/Tab_Vidore2-modified.png" alt="Tab_Vidore2">
-    <p class="limited-width">
-      Retrieval NDCG@5 Results. The first row in each block shows first-step retrieval results using ColPali or ColQwen. The remaining rows correspond to second-step
-      reranking results. Our model DocReRank-Base is trained with a similar configuration to MonoQwen but includes
-      our generated data. DocReRank-Full is trained with generated fine-grained details and rephrased negative queries.    
-        </p>
-    <br>
-
-
-    <h3 class="section-title"> Model Performance on the Real-MM-RAG Benchmark</h3>
-    <img class="resized-image_2" src="figures/Tab_real-modified.png" alt="Tab_Real">
-    <p class="limited-width">
-      Retrieval NDCG@5 results of rerankers after the first-step retrieval using ColPali and ColQwen. The left table shows performance on the original benchmark,
-      while the right table shows performance on the rephrased version, where queries were reworded to preserve meaning but use different phrasing.        </p>
-    <br>
-
-
-
-
-
-
-    <div class="bibtex-container">
-    <h3 class="section-title">BibTeX</h3>
-    <pre class="bibtex-code">
-      @article{wasserman2025docrerank,
-        title={DocReRank: Single-Page Hard Negative Query Generation for Training Multi-Modal RAG Rerankers},
-        author={Wasserman, Navve and Heinimann, Oliver and Golbari, Yuval and Zimbalist, Tal and Schwartz, Eli and Irani, Michal},
-        journal={arXiv preprint arXiv:2505.22584},
-        year={2025}
-      }
-    </pre>
-    </div>
-
-
+    <figure class="img-well plot">
+      <img class="img" src="figures/assumption_removal_curve.png"
+           alt="Effect of assumption removal on TPR at 0% FPR">
+    </figure>
   </div>
+</section>
 
+  <!-- BIBTEX -->
+  <section class="card" id="bibtex">
+    <h2 class="section-title">BibTeX</h2>
+    <figure></figure>
+    <div class="bibtex">
+@article{golbari2025impMIA,
+  title   = {ImpMIA: Leveraging Implicit Bias for Membership Inference under Realistic Scenarios},
+  author  = {Golbari, Yuval and Wasserman, Navve and Vardi, Gal and Irani, Michal},
+  journal = {arXiv preprint arXiv:2510.10625},
+  year    = {2025}
+}
+    </div>
+  </section>
+
+  <section style="max-width:var(--max); margin:24px auto 40px; padding:0 16px; color:var(--muted); text-align:center;">
+    © 2025 ImpMIA Authors.
+  </section>
 
 </body>
 </html>
