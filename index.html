@@ -170,13 +170,10 @@
     <span class="mono">x ∈ S</span>, whether it belongs to the original training set.
   </p>
   <p>
-    <strong>Implicit Bias → KKT.</strong> Gradient-based training is biased toward
-    <em>max-margin</em> solutions. At such stationary points, the Karush–Kuhn–Tucker (KKT) conditions imply that the
-    parameters align with a non-negative combination of per-sample margin gradients:
-    <span class="mono">θ ≈ Σᵢ λᵢ gᵢ(xᵢ; θ)</span> with <span class="mono">λᵢ ≥ 0</span>.
-    Here <span class="mono">gᵢ</span> denotes the gradient of a margin-based objective at sample
-    <span class="mono">xᵢ</span>. Only a small set of influential (“support”) samples receive non-zero multipliers,
-    typically those closest to the decision boundary (by complementary slackness).
+    <strong>Implicit Bias → KKT.</strong> Gradient-based
+    optimization tends to converge to solutions that satisfy the Karush–Kuhn–Tucker (KKT) optimality
+    conditions of a certain maximum-margin problem.  In practice, this implies that the trained parameters of a network can be approximately expressed as a
+    linear combination of per-sample gradients from the training set: <span class="mono">θ ≈ Σᵢ λᵢ gᵢ(xᵢ; θ)</span> with <span class="mono">λᵢ ≥ 0</span>. where gᵢ is the per-sample margin gradient for example xᵢ.
   </p>
 </section>
 <!-- ATTACK -->
@@ -186,21 +183,11 @@
     <img class="img" src="figures/teaser2.png" alt="Lambda optimization overview">
   </figure>
 <p>
-  We exploit the KKT link that the trained weights can be written as a non-negative mix of per-sample margin gradients:
-  <span class="mono">θ = Σ<sub>i∈X_train</sub> λᵢ gᵢ</span>, <span class="mono">λᵢ ≥ 0</span>. Given only a superset
-  <span class="mono">X<sub>sup</sub></span>, we compute multiclass margin gradients
-  <span class="mono">gᵢ = ∇<sub>θ</sub>[Φ<sub>yᵢ</sub>(θ;xᵢ) − max<sub>j≠yᵢ</sub> Φ<sub>j</sub>(θ;xᵢ)]</span>,
-  stack them as <span class="mono">A = [g₁|…|g_M] ∈ ℝ^{p×M}</span>, and solve
-  <span class="mono">Aλ = θ</span> (with <span class="mono">λ ≥ 0</span>) to obtain one coefficient per candidate.
-  Large <span class="mono">λᵢ</span> ⇒ higher membership likelihood (especially near-margin points); if
-  <span class="mono">|X<sub>sup</sub>| ≤ p</span> and columns of <span class="mono">A</span> are independent, the solution is unique.
+  Given a set of candidate samples and the trained network weights, we optimize a set of coefficients
+  <span class="mono">{λᵢ}</span>—one for each sample—that best reconstruct the network parameters
+  <span class="mono">θ</span>. This provides the key signal: training samples are expected to receive
+  significantly larger coefficients, while non-members remain small.
 </p>
-<ul>
-  <li><strong>Filters & aug:</strong> drop misclassified samples; add a horizontal flip.</li>
-  <li><strong>Blockwise solve:</strong> split parameters into ~<span class="mono">1.5×10⁵</span>-dim blocks; solve per block to reduce memory/conditioning issues.</li>
-  <li><strong>Stabilization:</strong> center/normalize each block of <span class="mono">A</span> and the matching slice of <span class="mono">θ</span>.</li>
-  <li><strong>Aggregation:</strong> aggregate coefficients across blocks/augs to form the final score and suppress spurious non-member spikes.</li>
-</ul>
 </section>
 
   <!-- EVIDENCE -->
@@ -210,46 +197,61 @@
       <img class="img" src="figures/lambda_vs_distance.png" alt="Lambda score vs. decision-boundary distance">
     </figure>
     <p>
-      <strong>Results of ImpMIA.</strong> Members receive consistently higher λ scores—even at similar margin distances—while non-members concentrate near λ≈0. Scatter plot of superset samples: x-axis = distance from the decision boundary, y-axis = λ score; points are colored by membership (member vs. non-member). High λ strongly indicates membership.
+      <strong>Distinguishing members vs. non-members.</strong> Scatter over the superset:
+      x-axis = distance to the decision boundary; y-axis = λ score; points colored by membership.
+      Members receive consistently higher λ—often at similar distances—while non-members cluster near λ&nbsp;&approx;&nbsp;0.
     </p>
   </section>
 
   <!-- RESULTS -->
-  <section class="card" id="results">
-    <h2 class="section-title">Results: No Assumptions Setting</h2>
-    <figure class="img-well">
-      <img class="img" src="figures/table_main.png" alt="Membership inference results across datasets">
-    </figure>
-    <p>
-      <strong>Evaluation protocol (no-assumptions).</strong> We audit on CIFAR-10/100 and CINIC-10 with white-box access to the released weights (gradients computed on-the-fly). The primary metric is <strong>TPR at low FPR</strong>; AUC is reported for context. We remove the assumptions commonly used by reference-model MIAs:
-    </p>
-    <ul>
-      <li><strong>Unknown training configuration.</strong> The attacker does not know the target’s hyperparameters. For methods that require reference models, we train them under <em>mismatched</em> settings (optimizer schedule/scale, batch size, regularization, training length) instead of the target’s true config.</li>
+<section class="card" id="results">
+  <h2 class="section-title">Quantitative Results Under Realistic Settings (No Assumptions)</h2>
+  <figure class="img-well">
+    <img class="img" src="figures/table_main.png" alt="Membership inference results across datasets">
+  </figure>
 
-      <li><strong>Different data distribution.</strong> The candidate pool intentionally mixes in-distribution (ID) and out-of-distribution (OOD) samples (e.g., CINIC-10 / OpenImages variants), so non-members are not drawn from the same distribution as the target’s training data.</li>
+  <p>
+    We audit on CIFAR-10/100 and CINIC-10 with white-box access to the released weights. The primary metric is
+    <strong>TPR at low FPR</strong> (e.g., 0.01% / 0.00%); AUC is reported for context. We remove assumptions commonly
+    used by reference-model MIAs—<em>known training configuration</em>, <em>matched non-member distribution</em>, and
+    <em>known member ratio</em>—and also report the combined <em>no-assumptions</em> case.
+  </p>
+  <p>
+    <strong>Outcome.</strong> Under these realistic settings, reference-model attacks degrade sharply, while
+    <strong>ImpMIA</strong> maintains strong detection at tiny FPRs. See the table for per-dataset trends.
+  </p>
+</section>
 
-      <li><strong>Unknown fraction of members.</strong> The attacker does not know the member ratio in the candidate pool. Reference-based methods that assume a fixed ratio must calibrate on a mismatched mixture.</li>
+<!-- ASSUMPTIONS -->
+<section class="card" id="assumptions">
+  <h2 class="section-title">Influence of Assumptions (Ablation)</h2>
+  <figure class="img-well">
+    <img class="img" src="figures/table_assumptions.png" alt="Ablation of assumptions and their effect on membership inference performance">
+  </figure>
 
-      <li><strong>Removing all assumptions.</strong> We combine the above: mixed ID/OOD pool, mismatched reference-model training, and hidden member ratio.</li>
-    </ul>
-    <p>
-      <strong>Outcome.</strong> Under these realistic settings, reference-model attacks degrade sharply, while <strong>ImpMIA</strong> maintains strong detection at tiny FPRs. See the table for per-dataset trends.
-    </p>
+  <p>
+    We quantify how common assumptions used by reference-model MIAs affect results.
+    The table reports TPR (%) at ultra-low FPR (0.01% / 0.00%) on CINIC-10 while
+    progressively removing each assumption.
+  </p>
 
+  <ul>
+    <li><strong>Unknown training configuration.</strong> The attacker does not know the target’s hyperparameters.</li>
 
-  </section>
+    <li><strong>Different data distribution.</strong> The candidate pool intentionally mixes
+      in-distribution (ID) and out-of-distribution (OOD) samples.</li>
 
-  <!-- ASSUMPTIONS -->
-  <section class="card" id="assumptions">
-    <h2 class="section-title">Evaluation of Assumptions Influence</h2>
-    <figure class="img-well">
-      <img class="img" src="figures/table_assumptions.png" alt="Influence of assumptions on membership inference">
-    </figure>
-    <p>
-      Ablation on CINIC-10 removing: known training config, matched non-member distribution, and known member ratio. TPR (%) at FPR = 0.01% / 0.00%.
-      Black-box attacks collapse as assumptions are removed; <strong>ImpMIA</strong> remains strong and often improves.
-    </p>
-  </section>
+    <li><strong>Unknown fraction of members.</strong> The attacker does not know the member ratio in the
+      candidate pool;</li>
+
+    <li><strong>All assumptions removed.</strong> Combine the above: mixed ID/OOD pool, mismatched
+      reference-model training, and hidden member ratio.</li>
+  </ul>
+
+  <p><strong>Outcome.</strong> As assumptions are removed, reference-model attacks degrade sharply—especially at
+    zero-FPR operating points—while <strong>ImpMIA</strong> remains stable and often improves, retaining strong
+    detection at tiny FPR without tuning for the member ratio or the exact training configuration.</p>
+</section>
 
 <!-- CURVE -->
 <section class="card" id="curve">
@@ -269,17 +271,24 @@
   <div class="wrap">
     <div class="text">
       <h2 class="section-title">Effect of Assumption Removal</h2>
-    <p>
-      The curve shows the reliance of reference-model attacks on these assumptions: as each assumption is removed, their performance drops at a fixed zero-FPR operating point, while <strong>ImpMIA</strong> remains comparatively stable—highlighting its assumption-agnostic design.
-    </p>
+      <p>
+        <em>Plot (CINIC-10):</em> y-axis is TPR at a fixed 0% FPR; x-axis steps through:
+        <span class="mono">Known training config → Matched non-member distribution → Known member ratio → All removed</span>.
+        Curves compare reference-model attacks to <strong>ImpMIA</strong>.
+      </p>
+      <p>
+        As assumptions are removed, reference-model attacks drop sharply at 0% FPR, while
+        <strong>ImpMIA</strong> remains stable—showing minimal dependence on those assumptions.
+      </p>
     </div>
 
     <figure class="img-well plot">
       <img class="img" src="figures/assumption_removal_curve.png"
-           alt="Effect of assumption removal on TPR at 0% FPR">
+           alt="Effect of assumption removal on TPR at a fixed 0% FPR (CINIC-10)">
     </figure>
   </div>
 </section>
+
 
   <!-- BIBTEX -->
   <section class="card" id="bibtex">
